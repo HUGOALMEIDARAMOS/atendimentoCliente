@@ -1,0 +1,17 @@
+server:
+  port: 8087
+
+spring:
+  datasource:
+    url: jdbc:postgresql://192.168.0.30:5432/cielnte_db
+    username: admin
+    password: admin
+  jpa:
+    hibernate:
+      ddl-auto: update
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+      jdbc:
+        lob.non-contextual-creation: true
+    properties:
+      hibernate:
+        show_sql: true
