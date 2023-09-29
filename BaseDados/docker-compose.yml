@@ -1,0 +1,59 @@
+version: "3.9"
+
+   
+
+services:
+    #Banco de Dados
+    db:
+        image: postgres:14.5
+        container_name: postgress
+        restart: always
+        environment:
+            TZ: America/Sao_Paulo
+            POSTGRES_USER: admin
+            POSTGRES_PASSWORD: admin
+            POSTGRES_DB: cielnte_db
+        volumes:
+            - ./bancoDados:/var/lib/postgresql/data
+        ports:
+            - 5432:5432
+        networks:
+            - banco
+            
+    
+    #INTERFACE PARA ACESSO AO POSTGRESQLclear
+    pgadmin:
+        image: dpage/pgadmin4
+        container_name: pgadminn
+        environment:
+            PGADMIN_DEFAULT_EMAIL: hugo.undb@gmail.com
+            PGADMIN_DEFAULT_PASSWORD: hugo2010
+        ports:
+            - 8889:80
+        networks:
+            - banco
+        depends_on:
+            - db
+
+    #PAINEL DE CONTAINER
+    portainer:
+        image: portainer/portainer-ce:latest
+        container_name: portainer
+        security_opt:
+           - no-new-privileges:true
+        volumes:
+           - /etc/localtime:/etc/localtime:ro
+           - /var/run/docker.sock:/var/run/docker.sock:ro
+           - ./portainer-data:/data
+        ports:
+           - 9000:9000
+            
+
+
+volumes:
+    bancoDados:
+
+networks:
+    banco:
+  
+
