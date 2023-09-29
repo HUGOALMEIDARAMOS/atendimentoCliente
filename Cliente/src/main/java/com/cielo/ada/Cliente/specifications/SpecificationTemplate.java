@@ -9,15 +9,15 @@ import org.springframework.data.jpa.domain.Specification;
 
 public class SpecificationTemplate {
     @Or({
-        @Spec(path = "clienteType", params = "buscar" ,spec = Equal.class),
-        @Spec(path = "cnpj", params = "buscar" , spec = Equal.class),
-        @Spec(path = "razao_social",  params = "buscar" , spec = Equal.class),
-        @Spec(path = "mcc", params = "buscar" , spec = Equal.class),
-        @Spec(path = "cpf_contato", params = "buscar" , spec = Equal.class),
-        @Spec(path = "nome_contato", params = "buscar" , spec = Like.class),
-        @Spec(path = "email", params = "buscar" , spec = Like.class),
-        @Spec(path = "cpf",  params = "buscar" ,spec = Equal.class),
-        @Spec(path = "nome_pessoa_fisica",  params = "buscar" ,spec = Like.class)
+            @Spec(path = "clienteType", params = "buscar" ,spec = Equal.class),
+            @Spec(path = "cnpj", params = "buscar" , spec = Equal.class),
+            @Spec(path = "razao_social",  params = "buscar" , spec = Equal.class),
+            @Spec(path = "mcc", params = "buscar" , spec = Equal.class),
+            @Spec(path = "cpf_contato", params = "buscar" , spec = Equal.class),
+            @Spec(path = "nome_contato", params = "buscar" , spec = Like.class),
+            @Spec(path = "email", params = "buscar" , spec = Like.class),
+            @Spec(path = "cpf",  params = "buscar" ,spec = Equal.class),
+            @Spec(path = "nome_pessoa_fisica",  params = "buscar" ,spec = Like.class)
     })
     public interface ClienteSpec extends Specification<UserModel>{}
 }

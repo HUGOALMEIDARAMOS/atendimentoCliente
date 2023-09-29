@@ -1,7 +1,6 @@
 package com.cielo.ada.Cliente.dtos;
 
 import com.cielo.ada.Cliente.enums.ClienteType;
-import com.cielo.ada.Cliente.validation.UseCnpjValidLength;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.*;
 import lombok.Data;
@@ -15,7 +14,6 @@ public class UserDto {
     private UUID userId;
     private ClienteType clienteType;
     @Nullable
-    @UseCnpjValidLength
     private String cnpj;
     @Nullable
     private String razao_social;

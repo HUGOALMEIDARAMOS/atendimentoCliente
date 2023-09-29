@@ -2,6 +2,7 @@ package com.cielo.ada.Cliente.controllers;
 
 import com.cielo.ada.Cliente.dtos.UserDto;
 
+import com.cielo.ada.Cliente.models.FilaAtendimento;
 import com.cielo.ada.Cliente.models.UserModel;
 import com.cielo.ada.Cliente.services.UserService;
 import com.cielo.ada.Cliente.specifications.SpecificationTemplate;
@@ -28,6 +29,13 @@ public class Usercontroller {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    FilaAtendimento filaAtendimento;
+
+    public Usercontroller() {
+    }
+
 
     @GetMapping
     public ResponseEntity<Page<UserModel>> getAllClientes(
@@ -62,22 +70,24 @@ public class Usercontroller {
     public ResponseEntity<Object> registerCliente( @Valid @RequestBody  UserDto userDto){
 
         if (userDto.getCnpj() == null || userDto.getCnpj().isEmpty() ) {
+            System.out.println("CNPJ VAZIO, VALIDACAO DED CPF" + userDto.getCpf());
             if(userService.verificaCpf(userDto.getCpf())){
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("Cliente Já se encontra na base de dados");
             }
+        }else{
+            if (userService.verificaCnpj(userDto.getCnpj())) {
+                System.out.println("CNPJ PREENCHIDO, VALIDACAO DE CNPJ" + userDto.getCnpj());
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("Empresa Já se encontra na base de dados");
+            }
         }
-        if (userService.verificaCnpj(userDto.getCnpj())) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Empresa Já se encontra na base de dados");
-        }
-
 
         var userModel = new UserModel();
         BeanUtils.copyProperties(userDto, userModel);
         userModel.setDataCriacao(LocalDateTime.now(ZoneId.of("UTC")));
         userModel.setDataAlteracao(LocalDateTime.now(ZoneId.of("UTC")));
         userService.save(userModel);
-        System.out.println("salvou");
-        return ResponseEntity.status(HttpStatus.CREATED).body("Cliente Cadastrado com sucesso");
+        filaAtendimento.adicionarCliente(userModel.getUserId(), userModel.getRazao_social(), userModel.getNome_pessoa_fisica());
+        return ResponseEntity.status(HttpStatus.CREATED).body("cliente cadastrado com sucesso.");
     }
 
     @PutMapping("/{clienteId}")
@@ -98,11 +108,10 @@ public class Usercontroller {
             userModel.setNome_pessoa_fisica(userDto.getNome_pessoa_fisica());
             userModel.setDataAlteracao(LocalDateTime.now(ZoneId.of("UTC")));
             userService.save(userModel);
+            filaAtendimento.adicionarCliente(userModel.getUserId(), userModel.getRazao_social(), userModel.getNome_pessoa_fisica());
             return ResponseEntity.status(HttpStatus.OK).body("Cliente Alterado com sucesso");
         }
     }
-
-
 
 
 }

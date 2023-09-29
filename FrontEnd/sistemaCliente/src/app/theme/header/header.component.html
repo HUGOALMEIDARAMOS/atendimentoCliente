@@ -1,0 +1,18 @@
+<mat-toolbar>
+  <span>Atendimento ao Cliente</span>
+  <span class="example-spacer"></span>
+
+  <button mat-button [routerLink]="['/']">Inicio</button>
+
+  <button mat-button [matMenuTriggerFor]="belowMenu">Clientes</button>
+  <mat-menu #belowMenu="matMenu" yPosition="below">
+    <button mat-menu-item  [routerLink]="['/listaCliente/lista']">Listar</button>
+    <button mat-menu-item  [routerLink]="['/cadastroCliente/cadastro']">Cadastrar</button>
+  </mat-menu>
+
+  <button mat-icon-button class="hide-small"  matTooltip="oculpa toda tela" (click)="toggleFullscreen()">
+    <mat-icon>fullscreen</mat-icon>
+  </button>
+
+</mat-toolbar>
+

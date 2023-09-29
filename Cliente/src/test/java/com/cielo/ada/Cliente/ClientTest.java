@@ -11,8 +11,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.*;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 
 import java.util.ArrayList;
@@ -24,8 +29,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.request;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class ClientTest {
+
+    private UserDto userDto;
+    private  UUID clienteId;
+
+    private MockMvc mockMvc;
 
     @InjectMocks
     private Usercontroller userController;
@@ -36,6 +49,9 @@ public class ClientTest {
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
+        userDto = new UserDto();
+        clienteId = UUID.randomUUID();
+        mockMvc = MockMvcBuilders.standaloneSetup(userController).build();
     }
     @Test
     public void deveCriarObjetoUserController() throws  Exception{
@@ -65,7 +81,7 @@ public class ClientTest {
     @Test
     public void devecadastrarClientePessoaJuridica(){
         when(userService.verificaCnpj(anyString())).thenReturn(false);
-        UserDto userDto = new UserDto();
+
         userDto.setCnpj("12352545859");
         userDto.setClienteType(ClienteType.valueOf("JURIDICA"));
         userDto.setRazao_social("Comercio Menezes");
@@ -89,7 +105,6 @@ public class ClientTest {
     @Test
     public void devecadastrarClientePessoaFisica(){
        when(userService.verificaCpf(anyString())).thenReturn(false);
-        UserDto userDto = new UserDto();
         userDto.setCnpj("");
         userDto.setClienteType(ClienteType.valueOf("FISICA"));
         userDto.setRazao_social("");
@@ -111,12 +126,12 @@ public class ClientTest {
 
     }
 
+
+
     @Test
     public void deveNaoSalvarClienteDuplicado(){
 
         when(userService.verificaCpf(anyString())).thenReturn(true);
-
-        UserDto userDto = new UserDto();
         userDto.setCpf("12352545895");
 
         ResponseEntity<Object> response = userController.registerCliente(userDto);
@@ -131,8 +146,6 @@ public class ClientTest {
     @Test
     public void deveNaoSalvarEMpresaDuplicada(){
         when(userService.verificaCnpj(anyString())).thenReturn(true);
-
-        UserDto userDto = new UserDto();
         userDto.setCnpj("12525458545854");
 
         ResponseEntity<Object> response = userController.registerCliente(userDto);
@@ -146,8 +159,6 @@ public class ClientTest {
 
     @Test
     public void  deveAlterarCliente() {
-        UUID clienteId = UUID.randomUUID();
-        UserDto userDto = new UserDto();
 
         UserModel existingUserModel = new UserModel();
         when(userService.findById(clienteId)).thenReturn(Optional.of(existingUserModel));
@@ -164,8 +175,6 @@ public class ClientTest {
 
     @Test
     public void naoDeveAlterarCliente() {
-        UUID clienteId = UUID.randomUUID();
-        UserDto userDto = new UserDto();
 
         when(userService.findById(clienteId)).thenReturn(Optional.empty());
 
@@ -180,7 +189,6 @@ public class ClientTest {
 
     @Test
     public void deveDeletarCliente() {
-        UUID clienteId = UUID.randomUUID();
 
         UserModel existingUserModel = new UserModel();
         when(userService.findById(clienteId)).thenReturn(Optional.of(existingUserModel));
@@ -196,7 +204,6 @@ public class ClientTest {
 
     @Test
     public void naoDeveDeletarCliente() {
-        UUID clienteId = UUID.randomUUID();
 
         when(userService.findById(clienteId)).thenReturn(Optional.empty());
 
@@ -211,7 +218,6 @@ public class ClientTest {
 
     @Test
     public void deveListarDadosClienteIndividual() {
-        UUID clienteId = UUID.randomUUID();
 
         UserModel existingUserModel = new UserModel();
         when(userService.findById(clienteId)).thenReturn(Optional.of(existingUserModel));
@@ -226,7 +232,6 @@ public class ClientTest {
 
     @Test
     public void naoDeveListarDadosClienteIndividual() {
-        UUID clienteId = UUID.randomUUID();
 
         UserModel existingUserModel = new UserModel();
         when(userService.findById(clienteId)).thenReturn(Optional.empty());
